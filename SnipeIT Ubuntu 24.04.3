@@ -62,7 +62,7 @@ sudo cp .env.example .env
 
 sudo nano .env
 
-APP_URL=http://10.0.0.4
+APP_URL=http://AdresIPSerwera
 DB_DATABASE=snipeit
 DB_USERNAME=snipeit
 DB_PASSWORD=TwojeSilneHaslo
@@ -78,7 +78,7 @@ php artisan migrate
 sudo nano /etc/apache2/sites-available/snipeit.conf
 
 <VirtualHost *:80>
-    ServerName 10.0.0.4
+    ServerName AdresIPSerwera
     DocumentRoot /var/www/snipe-it/public
 
     <Directory /var/www/snipe-it/public>
@@ -100,4 +100,5 @@ sudo a2enmod rewrite
 sudo systemctl restart apache2
 
 # 9 Gotowe ! 
+
 
