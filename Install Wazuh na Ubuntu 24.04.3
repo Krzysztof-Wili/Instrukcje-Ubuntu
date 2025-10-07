@@ -1,3 +1,11 @@
+#0 0. Upewnij się że masz ustawione adresy DNS
+
+sudo nano /etc/systemd/resolved.conf
+
+[Resolve]
+DNS=1.1.1.1 8.8.8.8
+FallBackDNS=1.0.0.1 8.4.4.8
+
 #1 Atkualizacja systemu:
 
 sudo apt update && sudo apt upgrade -y
