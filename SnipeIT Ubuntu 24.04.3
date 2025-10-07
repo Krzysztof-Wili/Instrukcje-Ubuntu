@@ -1,3 +1,11 @@
+0. Upenij się że masz ustawione adresy DNS
+
+sudo nano /etc/systemd/resolved.conf
+
+[Resolve]
+DNS=1.1.1.1 8.8.8.8
+FallBackDNS=1.0.0.1 8.4.4.8
+
 1. Aktualizacja systemu
 sudo apt update && sudo apt upgrade -y
 
@@ -95,3 +103,4 @@ sudo systemctl restart apache2
 9. Gotowe!
 
 Otwórz w przeglądarce adres serwera: http://AdresIPSerwera i rozpocznij konfigurację Snipe-IT.
+
