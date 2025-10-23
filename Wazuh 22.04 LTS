@@ -1,0 +1,58 @@
+------ Ustawienie strefy czasowej (Europa/Warszawa) -------------------
+timedatectl
+sudo timedatectl set-timezone Europe/Warsaw
+sudo timedatectl status
+
+
+-------  Aktualizacja systemu --------------
+sudo apt update && sudo apt upgrade -y
+
+
+--------- Zainstaluj zależności -----------
+sudo apt install -y curl git docker.io docker-compose
+sudo systemctl enable docker --now
+
+----- Konfiguracja vm.max_map_count (dla Wazuh indexer) -----
+
+sudo sysctl -w vm.max_map_count=262144
+
+echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf
+
+
+---- Bezpieczeństwo serwera - Włącz firewall (UFW) ---------
+
+* Włączenie UFW (jeśli nie jest aktywne)
+sudo ufw --force enable
+
+* Porty do komunikacji z Agentami (Wazuh Manager)
+sudo ufw allow 1514/tcp    # Rejestracja agenta
+sudo ufw allow 55000/tcp   # Kontrola agenta / Domyślny port agenta
+sudo ufw allow 1515/tcp    # Domyślny port dla komunikacji agent-manager (połączenia kontrolne)
+
+* Porty dla Indexer i Dashboard
+sudo ufw allow 9200/tcp    # Wazuh Indexer (komunikacja wewnętrzna, warto ograniczyć do 127.0.0.1)
+sudo ufw allow 443/tcp     # Wazuh Dashboard (HTTPS - Domyślny port)
+sudo ufw allow OpenSSH     # Zezwól na SSH
+
+
+sudo ufw allow 22/tcp  # SSH
+sudo ufw allow 514/udp  # Syslog od Fortigate
+sudo ufw allow 443/tcp  # Wazuh dashboard (HTTPS)
+sudo ufw allow 80/tcp  # Wazuh dashboard (HTTP)
+sudo ufw enable
+
+------------Automatyczne aktualizacje bezpieczeństwa--------------------
+
+sudo apt install -y unattended-upgrades
+sudo dpkg-reconfigure --priority=low unattended-upgrades
+
+
+------------------ Dla Dockera ustawienia:-------------------------
+sudo nano /etc/docker/daemon.json
+
+
+{
+  "registry-mirrors": ["https://mirror.gcr.io"]
+}
+
+----------------------------------------------------------------------
