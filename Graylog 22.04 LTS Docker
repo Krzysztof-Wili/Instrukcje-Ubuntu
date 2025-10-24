@@ -11,3 +11,11 @@ FallBackDNS=1.0.0.1 8.4.4.8
 timedatectl
 sudo timedatectl set-timezone Europe/Warsaw
 sudo timedatectl status
+
+
+
+sudo nano /etc/docker/daemon.json
+
+{
+  "registry-mirrors": ["https://mirror.gcr.io", "https://docker.mirrors.ustc.edu.cn"]
+}
