@@ -1,0 +1,59 @@
+------ Ustawienie strefy czasowej (Europa/Warszawa) -------------------
+timedatectl
+sudo timedatectl set-timezone Europe/Warsaw
+sudo timedatectl status
+
+
+#1 Atkualizacja systemu:
+
+sudo apt update && sudo apt upgrade -y
+
+#2 Instalacja podstawowych narzędzi (jeśli brakuje)
+
+sudo apt install curl wget gnupg apt-transport-https -y
+
+#3 Pobierz skrypt Wazuh 4.14 (na dzień 24.10.2025r. najnowsza)
+
+sudo curl -sO https://packages.wazuh.com/4.14/wazuh-install.sh
+
+
+#4 Uruchom asystenta instalacji. Proces może potrwać 10-20 minut.
+
+sudo bash ./wazuh-install.sh -a
+
+#7 Po zakończeniu instalacji skrypt wyświetli podsumowanie zawierające dane do logowania. MUSISZ ZAPISAĆ TO HASŁO
+
+
+#8 Konfiguracja odbioru logów z FortiGate (UDP 514)
+
+sudo nano /var/ossec/etc/ossec.conf
+
+<remote>
+  <connection>syslog</connection>
+  <port>514</port>
+  <protocol>udp</protocol>
+  <allowed-ips>10.0.0.1/32</allowed-ips>
+  </remote>
+
+#9 Konfiguracja zapory sieciowej (Firewall UFW)
+
+* Włączenie UFW (jeśli nie jest aktywne)
+sudo ufw --force enable
+
+* Weryfikacja
+sudo ufw status
+
+sudo ufw allow 443/tcp     # Wazuh Dashboard (HTTPS - Domyślny port)
+sudo ufw allow 80/tcp     # Wazuh Dashboard (HTTP - Domyślny port)
+sudo ufw allow OpenSSH     # Zezwól na SSH
+sudo ufw allow 1514/tcp    # Rejestracja agenta
+sudo ufw allow 55000/tcp   # Kontrola agenta / Domyślny port agenta
+sudo ufw allow 1515/tcp    # Domyślny port dla komunikacji agent-manager (połączenia kontrolne)
+sudo ufw allow 9200/tcp    # Wazuh Indexer (komunikacja wewnętrzna, warto ograniczyć do 127.0.0.1)
+
+* Weryfikacja
+sudo ufw status
+
+
+
+
