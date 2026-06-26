@@ -37,3 +37,58 @@ sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin d
 
 # 6. Dodanie Twojego użytkownika do grupy docker (żeby nie pisać ciągle 'sudo')
 sudo usermod -aG docker $USER
+________________________________________________________________________________________________________
+
+
+mkdir -p ~/zabbix-docker/zbx_env/var/lib/postgresql/data
+cd ~/zabbix-docker
+nano docker-compose.yml
+
+
+services:
+  zabbix-db:
+    image: postgres:16-alpine
+    container_name: zabbix-db
+    restart: always
+    volumes:
+      - ./zbx_env/var/lib/postgresql/data:/var/lib/postgresql/data:rw
+    environment:
+      POSTGRES_USER: zabbix
+      POSTGRES_PASSWORD: MojeBezpieczneHaslo123!
+      POSTGRES_DB: zabbix
+
+  zabbix-server:
+    image: zabbix/zabbix-server-pgsql:ubuntu-7.0-latest
+    container_name: zabbix-server
+    restart: always
+    ports:
+      - "10051:10051"
+    volumes:
+      - ./zbx_env/usr/lib/zabbix/alertscripts:/usr/lib/zabbix/alertscripts:ro
+    environment:
+      DB_SERVER_HOST: zabbix-db
+      POSTGRES_USER: zabbix
+      POSTGRES_PASSWORD: MojeBezpieczneHaslo123!
+      POSTGRES_DB: zabbix
+
+  zabbix-web:
+    image: zabbix/zabbix-web-nginx-pgsql:ubuntu-7.0-latest
+    container_name: zabbix-web
+    restart: always
+    ports:
+      - "80:8080"
+      - "443:8443"
+    environment:
+      ZBX_SERVER_HOST: zabbix-server
+      DB_SERVER_HOST: zabbix-db
+      POSTGRES_USER: zabbix
+      POSTGRES_PASSWORD: MojeBezpieczneHaslo123!
+      POSTGRES_DB: zabbix
+      PHP_TZ: Europe/Warsaw
+
+__________________________________________________________
+
+
+docker compose up -d
+
+
