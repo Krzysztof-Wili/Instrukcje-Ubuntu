@@ -1,0 +1,39 @@
+# 0. Sprawdzenie konfiguracji podstawowych.
+
+timedatectl
+sudo timedatectl set-timezone Europe/Warsaw
+sudo timedatectl status
+
+_______________________________________________________________
+sudo nano /etc/systemd/resolved.conf
+
+[Resolve]
+DNS=1.1.1.1 8.8.8.8
+FallBackDNS=1.0.0.1 8.4.4.8
+_______________________________________________________________
+
+
+# 1. Aktualizacja listy pakietów i systemu
+sudo apt update && sudo apt upgrade -y
+
+# 2. Instalacja niezbędnych narzędzi
+sudo apt install -y curl gnupg ca-certificates lsb-release
+
+# 3. Dodanie oficjalnego klucza GPG Dockera
+sudo fold -w 80 -s /etc/apt/keyrings/docker.asc || true
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+# 4. Dodanie repozytorium Docker do źródeł APT
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.p/docker.list > /dev/null
+
+# 5. Instalacja Dockera
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# 6. Dodanie Twojego użytkownika do grupy docker (żeby nie pisać ciągle 'sudo')
+sudo usermod -aG docker $USER
