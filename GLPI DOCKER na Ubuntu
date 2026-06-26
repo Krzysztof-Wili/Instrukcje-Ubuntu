@@ -1,0 +1,31 @@
+timedatectl
+sudo timedatectl set-timezone Europe/Warsaw
+sudo timedatectl status
+
+_______________________________________________________________
+sudo nano /etc/systemd/resolved.conf
+
+[Resolve]
+DNS=1.1.1.1 8.8.8.8
+FallBackDNS=1.0.0.1 8.4.4.8
+_______________________________________________________________
+
+
+# 1. Aktualizacja repozytoriów
+sudo apt update && sudo apt upgrade -y
+
+# 2. Instalacja curl (potrzebnego do instalacji Dockera)
+sudo apt install -y curl
+
+# 3. Pobranie i uruchomienie oficjalnego skryptu instalacyjnego Docker
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+
+# 4. Dodanie Twojego użytkownika do grupy docker (żeby nie pisać 'sudo' przed każdym poleceniem docker)
+sudo usermod -aG docker $USER
+
+______________________________________________________________________________________________________________
+
+
+
+
