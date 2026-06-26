@@ -1,3 +1,5 @@
+# Sprawdzenie konfiguracji podstawowych.
+
 timedatectl
 sudo timedatectl set-timezone Europe/Warsaw
 sudo timedatectl status
